@@ -1,6 +1,4 @@
-# Git teste file only this 
+# Scripts in python, not professional.
 
 
-Modificando o arquivo.
-
-Push repository
+With you like, lets try improve the everthing here!
