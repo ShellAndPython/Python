@@ -1,250 +1,248 @@
-# -* condig: utf-8 *-
-# Forca game
-# By Adcode
-
-
-
-def sorted_word_game(file='comida.txt'):
+def sort_word(file='nomes.txt'):
     from random import choice
-    import os
 
-    db_file = '/home/junior/Dropbox/Scripts/Python/learn_path/DSA_ACADEMY/05_OOP/forca_game/'
+    db_file = '/home/junior/Dropbox/Scripts/Python/' \
+              'learn_path/DSA_ACADEMY/05_OOP/forca_game/'
 
     with open(db_file + file, 'r') as db_file:
         data = db_file.read()
 
-        return choice(data.split('\n'))
+        return choice(data.split('\n')).strip()
 
 
-
-
-
-class Grafico:
-
-    # Atributos
-
-    person = [
-        """
-     _____
+person = [
+    """
+    +___+
     |   |
-    O   |
         |
         |
         |
-      _____
+        |
+        |
+        |
+    ========
     """,
-        """
-     _____
+    """
+    +___+
     |   |
     O   |
     |   |
         |
         |
-      _____
+        |
+        |
+    ========
     """,
-        """
-     _____
+    """
+    +___+
     |   |
     O   |
     |   |
    /|   |
         |
-      _____
-    """,
-        """
-     _____
-    |   |
-    O   |
-    |   |
-   /|\\ |
         |
-      _____
+        |
+    ========
     """,
-        """
-     _____
-    |   |
-    O   |
-    |   |
-   /|\\ |
-    |   |
-      _____
-    """,
-        """
-     _____
-    |   |
-    O   |
-    |   |
-   /|\\ |
-    |   |
-   /  _____
-    """,
-        """
-     _____
-    |   |
-    O   |
-    |   |
-   /|\\ |
-    |   |
-   / \\_____
     """
-    ] # Modelagem do inforcado
-    line_board = sorted_word_game()
-    word_game_split = [char for char in line_board]
+    +___+
+    |   |
+    O   |
+    |   |
+   /|\  |
+        |
+        |
+        |
+    ========
+    """,
+    """
+    +___+
+    |   |
+    O   |
+    |   |
+   /|\  |
+    |   |
+        |
+        |
+    ========
+    """,
+    """
+    +___+
+    |   |
+    O   |
+    |   |
+   /|\  |
+    |   |
+   /    |
+        |
+    ========
+    """,
+    """
+    +___+
+    |   |
+    O   |
+    |   |
+   /|\  |
+    |   |
+   / \  |
+        |
+    ========
+    """
+]
 
-    def __init__(self):
-        """""
-            Constructor criado para inicializar o grafico do jogo com a palavra sorteada.
-        """""
-        print(f'{"=-" * 50}')
-        print('Bem vindo !'.rjust(50))
-        print('Jogo da Forca V1'.rjust(53))
-        print(f'{"=-" * 50}')
+
+class ForcaGame:
+
+    def __init__(self, word):
+        self.word_split = [char for char in word]
+        self.list_player_word = ['_' for char in range(len(word))]
+        self.inforcado_level = 0  # Para controlar o print do enforcado
+        self.GAME_OVER = len(word)  # Nivel maximo de tentativas
+        self.round = 0  # Rodada atual
+        self.point = 0  # Letras acertadas na rodada atual
+        self.correct_word = wrong_word = 0  # Contador de acertos e erros
+
+        # Armazena letras acertadas e erradas
+        self.char_dict = {'char_good': [],
+                          'char_bad': [],
+                          }
+
+        self.play(word)
 
 
-    def print_grafic(self, lvl_inforc: (int), round: (int), player_word_list: [list] ):
-        """
-            Este método será utilizado para exibir o grafico do jogo,
-            sempre que chamado.
-            Quando está na primeira rodada do game, não e printado as letras do player.
-        """
-        # Printando o grafico do enforcado
+    def play(self, word):
         try:
-            print(f'{self.person[lvl_inforc]}', end='')
-        except IndexError:
-            pass
-
-        # Quando a rodada começar, não executar o print das letras do player.
-        if not round == 0:
-            # Printando letras do usuario.
-            for char in player_word_list:
-                print(f'{char} ', end='')
-
-
-    def print_table_word(self):
-        print(1)
-
-
-
-class Game_rule(Grafico):
-    """
-    Esta classe será responsavel por modelar o desenho do enforcado,
-    atráves do erro ou do acerto do jogador, para cada jogada, será
-    executado um desejo com o status atual.
-  """
-
-    # Atributos
-    word_game = sorted_word_game()  # Sorteando a palavra para o game.
-    player_char_current = ''  # Ira armazenar o caractere armazenado pelo usuário.
-    word_game_split = [char for char in word_game]  # Ira armazenar a palavra escolhida, de forma separada
-    # TODO Verificar por que esta variavel foi criada
-    final_word_to_win = word_game_split.copy()
-
-    player_word_list = [str() for x in range(len(word_game_split))]  # Ira armazenar as letras do usuario.
-    POINT_CURRENT = 0 # Recebe o número de acertos na jogada atual
-    LEVEL_INFORC = 0  # Quantidade maxima de erros que se pode obter == 7
-    MAX_POINT_PLAYER = len(word_game_split) # Quantidade maxima de pontos na rodada que o jogador podera fazer
-    CURRENT_ROUND = 0 # Armazenara o número atual da rodada.
-    ROUND_SIZE = len(final_word_to_win)# Tamanho do round atual ( Baseado no tamanho da palavra sorteada)
-
-
-    def get_play_round(self):
-        """""
-            Ler caractere inserido pelo player e modifica  o atributo '__play_char_current'
-            Soma 1 n round atual.
-        """""
-        # Lendo jogada
-        self.player_char_current = input('\nInforme um letra: ').lower()  # Obtendo resposta do jogador
-        self.CURRENT_ROUND += 1
-
-
-    def update_play_list(self):
-        """""
-            Atualiza a lista de palavras do jogador, com novas letras.
-            point_number: Numero de acertos na rodada atual.point_number: int
-        """""
-
-        #char_count = self.__word_game_split.count(self.__player_char_current)
-
-        index_current = 0
-        index_current_list = [] # Ira servir como lista auxiliar para coletar dentro do looping index das ocorrencias de palavras
-
-        # Pegar o index de todas as posições (Se existir mais de uma), e armazenar em uma lista.
-        while True:
-            if self.player_char_current in self.word_game_split:
-                #  Pegando o index da letra atual e adicionando na lista.
-                index_current_list.append(self.word_game_split.index(self.player_char_current))
-                index_current = self.word_game_split.index(self.player_char_current)
-                # Adicionado Nulo no index a qual o player acertou a palavra.
-                self.word_game_split[index_current] = ''
-            else:
-                break
-
-        # Atualizando lista da palavra do player.
-        for element in index_current_list:
-            self.player_word_list[element] = self.player_char_current
-
-        print(f'Lista usuario: {self.player_word_list}')
-
-
-    def check_status_game(self):
-
-        if self.player_word_list == self.final_word_to_win:
-            self.print_grafic(self.LEVEL_INFORC, self.CURRENT_ROUND, self.player_word_list)
-            print('\nParabens você ganhou')
-            print(f'A palavra foi {self.word_game}')
-            exit(0)
-        elif self.LEVEL_INFORC == 7:
-            self.print_grafic(self.LEVEL_INFORC, self.CURRENT_ROUND, self.player_word_list)
-            print('\nVoce perdeu !')
-            print(f'A palavra era {self.word_game}')
+            while self.GAME_OVER != 0:
+                self.print_grafic_game(word)  # Boas vindas
+                self.set_resp_player()  # Ler letra do jogador
+                self.update_game_status()  # Atualizar status do game
+                self.check_final_game(word)  # Checar se jogador ganhou
+        except KeyboardInterrupt:
+            print('\n\nJogo encerrado !')
             exit(0)
 
+    def print_grafic_game(self, word):
 
-    def update_player_chance(self):
-        """""
-            Verifica se o jogador acertou ou não a palavra.
-            Caso tenha acertado, será verificado a quantidade de letras acertadas.
-            Caso não, o nivel do enforcamento ira aumentar.
-        """""
-        # Caso o jogador tenha acertado
-        if self.player_char_current in self.final_word_to_win:
-            # Verificando quantos caracteres o jogador acertou
-            self.POINT_CURRENT = self.final_word_to_win.count(self.player_char_current)
+        self.clear_scream()
+        if self.round == 0:
+            print('JOGO DA FORCA')
+            print()
+            try:
+                print(person[self.inforcado_level])
+            except IndexError:
+                pass
+            self.print_char_player(word)
+            print()
         else:
-            self.LEVEL_INFORC += 1 # Caso o jogador tenha errado, o nivel de enforcamento ira aumentar.
+            self.print_char_used()
+            try:
+                print(person[self.inforcado_level])
+            except IndexError:
+                pass
+            self.print_char_player(word)
+            print()
 
-        print(f'Quantidade de erros: {self.LEVEL_INFORC}')
-        print(f'Quantidade de letras acertadas: {self.POINT_CURRENT}')
-
-
-
-class Main(Game_rule, Grafico):
-    def __init__(self):
-        super().__init__() # Chamando o constructor da subclass
-
-
-    def play(self):
-        for round in range(self.ROUND_SIZE):
-            self.print_grafic(self.LEVEL_INFORC, self.CURRENT_ROUND, self.player_word_list)
-            self.get_play_round()
-            self.update_play_list()
-            self.update_player_chance()
-            self.check_status_game()
+    def print_char_player(self, word):
+        print(f'Um nome que possui {len(word)} letras: ', end='')
+        for line in self.list_player_word:
+            print(f'{line}', end='')
+        print()
 
 
+    def print_char_used(self):
+        print()
+        print('Letras acertadas: ')
+        for char in self.char_dict['char_good']:
+            print(f'{char} ', end='')
+        print()
+        print()
+        print('Letras Erradas: ')
+        for char in self.char_dict['char_bad']:
+            print(f'{char} ', end='')
 
 
-    # TODO Codificar fluxo do game.
-    # TODO Verificar erro ou acerto.
-    # TODO Preencher letra ou exibi menssagem de erro.
-    # TODO Em caso de acerto atualizar grafico com letra.
-    # TODO Verificar se jogador ganhou ou perdeu.
+    def set_resp_player(self):
+        self.player_char = input('Digite uma letra: ').lower()
 
 
-
-g1 = Main()
-g1.play()
-
-
+    def update_game_status(self):
+        self.update_round()  # Atualiza round atual do game
+        self.check_char_player(self.player_char)
 
 
+    def check_char_player(self, char):
+        if char in self.word_split and not self.check_char_iqual():
+            self.char_dict['char_good'].append(char)
+            self.update_point_round()  # Atualiza os acertos do round atual
+            self.update_player_list()  # Atualiza a lista do jogador
+            self.update_word_split()  # Atualiza a palavra base
+        elif self.check_char_iqual(): # Caso a palavra seja repetida
+            pass
+        else:
+            self.char_dict['char_bad'].append(self.player_char)
+            self.update_inforc()
+            self.update_lost_chance()
+
+
+    def check_char_iqual(self):
+        """
+        Criado para checar se a palavra ja existe
+        :return: True se o caractere ja foi digitado
+        """
+        if self.player_char in self.char_dict['char_good'] or \
+                self.player_char in self.char_dict['char_bad']:
+            return True
+
+
+    def check_final_game(self, word_game):
+        print(self.list_player_word)
+        if ''.join(self.list_player_word) == word_game:
+            self.print_grafic_game(word_game)
+            print(f'Parabens voce ganhou a palavra era "{word_game}"\n\n')
+            exit(0)
+        elif self.GAME_OVER == 0:
+            self.print_grafic_game(word_game)
+            print(f'voce perdeu, a palavra era "{word_game}"\n\n')
+            exit(0)
+
+
+    def update_lost_chance(self):
+        self.GAME_OVER -= 1
+
+
+    def update_player_list(self):
+        for index, char in enumerate(self.word_split):
+            if char == self.player_char:
+                self.list_player_word.pop(index)
+                self.list_player_word.insert(index, char)
+
+
+    def update_word_split(self):
+        for index, char in enumerate(self.word_split):
+            if char == self.player_char:
+                self.word_split[index] = ''
+
+
+    def update_point_round(self):
+        self.point = self.word_split.count(self.player_char)
+
+
+    def update_round(self):
+        self.round += 1
+
+
+    def update_inforc(self):
+        self.inforcado_level += 1
+
+
+    def clear_scream(self):
+        from os import system
+        system('cls || clear')
+
+def main():
+
+    player = ForcaGame(sort_word())
+
+
+if __name__ == '__main__':
+    main()
