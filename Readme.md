@@ -1,4 +1,4 @@
-# Scripts in python, not professional.
+# Softwares and Scripting.
 
 
-With you like, lets try improve the everthing here!
+Small scripts and programs in Python, I'm not learning anything professional. Feel free to help with constructive criticism.
